@@ -1,0 +1,38 @@
+/* --- Master Mermaid Rule Override Block --- */
+
+/* Force all text elements to clean, high-contrast white */
+.mermaid text, 
+.mermaid .node text, 
+.mermaid .edgeLabel, 
+.mermaid .edgeLabel rect {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+  font-family: var(--md-text-font-family), sans-serif !important;
+}
+
+/* Force standard container box shapes to uniform monochromatic dark grey */
+.mermaid .node rect, 
+.mermaid .node circle, 
+.mermaid .node polygon, 
+.mermaid .node path,
+.mermaid .cluster rect {
+  fill: #1e222b !important;
+  background-color: #1e222b !important;
+}
+
+/* Base Connection Line and Arrowhead Visibility Rules */
+.mermaid .edgePath .path, 
+.mermaid .arrowheadPath {
+  stroke: #aaaaaa !important;
+  fill: #aaaaaa !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Render the container canvas layout smoothly inside your Material sheets */
+.md-typeset .mermaid {
+  background-color: #1e222b;
+  border: 1px solid #444444;
+  border-radius: 4px;
+  padding: 16px;
+  margin: 1em 0;
+}

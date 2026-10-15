@@ -1,0 +1,55 @@
+site_name: "Out-of-Process Introspection Engine SDK Manual"
+site_author: "SDK Engineering Team"
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - search.highlight
+    - toc.integrate
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue-grey
+      accent: indigo
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - javascripts/mermaid_theme.js
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+          options:
+            theme: base
+
+nav:
+  - Welcome Manual: index.md
+  - API Reference Specification:
+    - "Chapter 1: Memory Layers Defined":
+      - "Ch.1.1 - Layer A: Host virtual Workspace": core/overview/chapter_1/host.md
+      - "Ch.1.2 - Layer B: Hypervisor EPT Map": core/overview/chapter_1/hypervisor.md
+      - "Ch.1.3 - Layer C: Android Physical RAM": core/overview/chapter_1/kernel.md
+      - "Ch.1.4 - Layer D: Application Runtime": core/overview/chapter_1/application.md
+    - "Chapter 2: Guest Kernel Analysis":
+      - "Ch.2.1 - Process Descriptor Layout": core/overview/chapter_2/descriptor.md
+      - "Ch.2.2 - Task Link Enumeration": core/overview/chapter_2/task_links.md
+      - "Ch.2.3 - PGD Directory Resolution": core/overview/chapter_2/pgd_resolution.md
+    - "Chapter 3: Bitwise Shift Mechanics":
+      - "Ch.3.1 - Paging Table Indices": core/overview/chapter_3/paging_engine.md
+      - "Ch.3.2 - Manual Page Table Walking": core/overview/chapter_3/page_walk.md
+    - "Chapter 4: Discovery Heuristics":
+      - "Ch.4.1 - Research Methods": core/overview/chapter_4/research_methods.md
+    - "Chapter 5: Kernel Structures":
+      - "Ch.5.1 - Memory Geometry Analysis": core/overview/chapter_5/memory_geometry.md
+    - "Chapter 6: IL2CPP Tracking":
+      - "Ch.6.1 - Run-time Metadata Inspection": core/overview/chapter_6/metadata_inspection.md

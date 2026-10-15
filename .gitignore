@@ -1,0 +1,19 @@
+# --- MkDocs / Python Documentation Cache ---
+site/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# --- .NET C# Build Outputs ---
+[Bb]in/
+[Oo]bj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- User Operating System Files ---
+.DS_Store
+Thumbs.db

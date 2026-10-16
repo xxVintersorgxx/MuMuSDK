@@ -15,39 +15,51 @@ Process ID 0 (known as the `swapper` task or `init_task`) is statically compiled
     ```
 
 ## 1.3 The C# Task Enumeration Engine Logic
-Once your C# framework locks onto this structural anchor node, it uses a non-intrusive loop to traverse the active process chains and identify target runtimes:
+Once your C# framework locks onto this structural anchor node, it uses a non-intrusive loop to traverse the active process chains and identify target runtimes.
 
 !!! abstract "C# Out-of-Process Task Chain Enumeration"
     ```csharp
-    public static class TaskChainEnumerator
+    using System;
+    using MuMuSDK.Core.Services; // (1)
+
+    namespace MuMuSDK.Core.Services
     {
-        /// <summary>
-        /// Traverses the guest kernel doubly-linked task list to extract a target process node pointer.
-        /// </summary>
-        public static IntPtr FindTargetProcessNode(IntPtr anchorNode, string targetName, IntPtr upperBaseHva)
+        public static class TaskChainEnumerator
         {
-            IntPtr currentNode = anchorNode;
-            
-            do
+            /// <summary>
+            /// Traverses the guest kernel doubly-linked task list to extract a target process node pointer.
+            /// </summary>
+            public static IntPtr FindTargetProcessNode(IntPtr anchorNode, string targetName, IntPtr upperBaseHva)
             {
-                // 1. Read process name character string buffer metrics
-                string currentCommName = ReadProcessCommName(currentNode);
+                IntPtr currentNode = anchorNode;
                 
-                if (currentCommName.Equals(targetName, StringComparison.OrdinalIgnoreCase))
+                do
                 {
-                    // Success: Target identifier discovered cleanly
-                    return currentNode;
-                }
+                    // 1. Read process name character string buffer metrics
+                    string currentCommName = ReadProcessCommName(currentNode);
+                    
+                    if (currentCommName.Equals(targetName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Success: Target identifier discovered cleanly
+                        return currentNode;
+                    }
 
-                // 2. Extract next circular task entry pointer handle from offset 0x30
-                IntPtr guestPhysicalNext = ReadPointer(currentNode + 0x30);
-                
-                // 3. Convert extracted GPA handle to high-level Host Virtual Address
-                currentNode = HypervisorRouter.TranslateGpaToHva((ulong)guestPhysicalNext, IntPtr.Zero, upperBaseHva);
+                    // 2. Extract next circular task entry pointer handle from offset 0x30
+                    IntPtr guestPhysicalNext = ReadPointer(currentNode + 0x30);
+                    
+                    // 3. Convert extracted GPA handle to high-level Host Virtual Address via our native core service helper
+                    currentNode = HypervisorRouter.TranslateGpaToHva((ulong)guestPhysicalNext, IntPtr.Zero, upperBaseHva);
 
-            } while (currentNode != anchorNode);
+                } while (currentNode != anchorNode);
 
-            return IntPtr.Zero; // Context not discovered inside the current scheduling cycle
+                return IntPtr.Zero; // Context not discovered inside the current scheduling cycle
+            }
+
+            // Primitive placeholders matching your low-level verification drivers
+            private static string ReadProcessCommName(IntPtr nodeHva) => throw new NotImplementedException();
+            private static IntPtr ReadPointer(IntPtr addressHva) => throw new NotImplementedException();
         }
     }
     ```
+
+    1. 🔍 Structural resolution helpers like `HypervisorRouter` reside safely in the internal invariant `MuMuSDK.Core.Services` namespace wrapper.

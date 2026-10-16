@@ -1,19 +1,84 @@
-# --- MkDocs / Python Documentation Cache ---
-site/
-.pytest_cache/
-__pycache__/
-*.pyc
+# =========================================================================
+#                   MuMuSDK MASTER REPOSITORY BLOCK LIST
+# =========================================================================
 
-# --- .NET C# Build Outputs ---
+# -------------------------------------------------------------------------
+# 1. CORE .NET 10 BUILD & COMPILATION ARTIFACTS
+# -------------------------------------------------------------------------
 [Bb]in/
 [Oo]bj/
+[Ll]og/
+[Ll]ogs/
+capture/
+*.deps.json
+*.runtimeconfig.dev.json
+*.runtimeconfig.json
+
+# -------------------------------------------------------------------------
+# 2. MICROSOFT VISUAL STUDIO CORE HOOKS (All Versions)
+# -------------------------------------------------------------------------
 .vs/
 .vscode/
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
+*.opensdf
+*.sdf
+*.sublime-project
+*.sublime-workspace
 
-# --- User Operating System Files ---
+# Hidden diagnostic tracking folders
+AppPackages/
+BundleArtifacts/
+_Chutzpah*/
+TestResults/
+*.trx
+*.vspec
+
+# Roslyn and MSBuild dynamic assembly caches
+.node_repl_history
+ipch/
+$tf/
+[Tt]est[──_][Rr]esults/
+
+# -------------------------------------------------------------------------
+# 3. JETBRAINS RIDER & RESHARPER CACHES
+# -------------------------------------------------------------------------
+.idea/
+*.sln.DotSettings.user
+_ReSharper.*/
+
+# -------------------------------------------------------------------------
+# 4. MkDocs / PYTHON DOCUMENTATION COMPILE BUFFERS
+# -------------------------------------------------------------------------
+**/site/
+**/.pytest_cache/
+**/__pycache__/
+*.pyc
+*.pyo
+.pypilot
+.fscache
+
+# -------------------------------------------------------------------------
+# 5. LOCAL REPOMIX UTILITIES & UNCOMPRESSED PAYLOAD OUTPUTS
+# -------------------------------------------------------------------------
+# Automation Scripts
+docs.ps1
+code.ps1
+full.ps1
+repomix.bat
+
+# Package Outputs
+repo-master-pack*.txt
+repo-code-only*.txt
+repo-docs-only*.txt
+
+# -------------------------------------------------------------------------
+# 6. OPERATING SYSTEM JUNKS
+# -------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+[Nn]ew[──_][Ff]older/

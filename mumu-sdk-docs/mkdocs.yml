@@ -8,6 +8,8 @@ theme:
     - navigation.indexes
     - search.highlight
     - toc.integrate
+    - content.code.copy          # Adds a copy button to code blocks
+    - content.code.annotate      # ENABLES: Text Annotations (1) below code blocks
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -22,34 +24,58 @@ extra_javascript:
   - javascripts/mermaid_theme.js
 
 markdown_extensions:
-  - admonition
-  - pymdownx.details
-  - pymdownx.superfences:
+  - admonition                   # ENABLES: !!! info, !!! failure, !!! success blocks
+  - footnotes                    # ENABLES: [^1] Footnotes
+  - attr_list                    # Required for styling extensions
+  - md_in_html                   # Allows markdown parsing inside raw HTML elements
+  - pymdownx.details             # Allows collapsible drop-down details blocks
+  - pymdownx.tabbed:             # ENABLES: === "Tabs" structure
+      alternate_style: true 
+  - pymdownx.superfences:        # ENABLES: Mermaid rendering within code fences
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
           options:
             theme: base
+  - pymdownx.arithmatex:         # ENABLES: LaTeX Math Equations \[ ... \]
+      generic: true
 
 nav:
   - Welcome Manual: index.md
-  - API Reference Specification:
-    - "Chapter 1: Memory Layers Defined":
-      - "Ch.1.1 - Layer A: Host virtual Workspace": core/overview/chapter_1/host.md
-      - "Ch.1.2 - Layer B: Hypervisor EPT Map": core/overview/chapter_1/hypervisor.md
-      - "Ch.1.3 - Layer C: Android Physical RAM": core/overview/chapter_1/kernel.md
-      - "Ch.1.4 - Layer D: Application Runtime": core/overview/chapter_1/application.md
-    - "Chapter 2: Guest Kernel Analysis":
-      - "Ch.2.1 - Process Descriptor Layout": core/overview/chapter_2/descriptor.md
-      - "Ch.2.2 - Task Link Enumeration": core/overview/chapter_2/task_links.md
-      - "Ch.2.3 - PGD Directory Resolution": core/overview/chapter_2/pgd_resolution.md
-    - "Chapter 3: Bitwise Shift Mechanics":
-      - "Ch.3.1 - Paging Table Indices": core/overview/chapter_3/paging_engine.md
-      - "Ch.3.2 - Manual Page Table Walking": core/overview/chapter_3/page_walk.md
-    - "Chapter 4: Discovery Heuristics":
-      - "Ch.4.1 - Research Methods": core/overview/chapter_4/research_methods.md
-    - "Chapter 5: Kernel Structures":
-      - "Ch.5.1 - Memory Geometry Analysis": core/overview/chapter_5/memory_geometry.md
-    - "Chapter 6: IL2CPP Tracking":
-      - "Ch.6.1 - Run-time Metadata Inspection": core/overview/chapter_6/metadata_inspection.md
+  
+  - RE Introspection Research:
+      - "Reverse Engineering Workflow": core/overview/re_workflow.md
+      - "Chapter 1: Memory Layers Defined":
+          - "Ch.1.1 - Layer A: Host Virtual Workspace": core/overview/chapter_1/host.md
+          - "Ch.1.2 - Layer B: Hypervisor EPT Map": core/overview/chapter_1/hypervisor.md
+          - "Ch.1.3 - Layer C: Android Physical RAM": core/overview/chapter_1/kernel.md
+          - "Ch.1.4 - Layer D: Application Runtime": core/overview/chapter_1/application.md
+      - "Chapter 2: Guest Kernel Analysis":
+          - "Ch.2.1 - Process Descriptor Layout": core/overview/chapter_2/descriptor.md
+          - "Ch.2.2 - Task Link Enumeration": core/overview/chapter_2/task_links.md
+          - "Ch.2.3 - PGD Directory Resolution": core/overview/chapter_2/pgd_resolution.md
+      - "Chapter 3: Bitwise Shift Mechanics":
+          - "Ch.3.1 - Paging Table Indices": core/overview/chapter_3/paging_engine.md
+          - "Ch.3.2 - Manual Page Table Walking": core/overview/chapter_3/page_walk.md
+      - "Chapter 4: Discovery Heuristics":
+          - "Ch.4.1 - Research Methods": core/overview/chapter_4/research_methods.md
+      - "Chapter 5: Kernel Structures":
+          - "Ch.5.1 - Memory Geometry Analysis": core/overview/chapter_5/memory_geometry.md
+      - "Chapter 6: IL2CPP Tracking":
+          - "Ch.6.1 - Run-time Metadata Inspection": core/overview/chapter_6/metadata_inspection.md
+
+  - SDK Software Architecture:
+      - "System Topology & Decoupling": core/sdk/architecture/architecture.md
+      - "Solution File Structure": core/sdk/architecture/file_structure.md
+      - "Avalonia UI & Intent Pipeline": core/sdk/architecture/ui_architecture.md
+      - "Logging & Diagnostic Infrastructure": core/sdk/architecture/logging_infrastructure.md
+      - "Master Ticker & Game Loop Sync": core/sdk/architecture/ticker_synchronization.md
+      - "15-Scenario Core Verification Matrix": core/sdk/architecture/verification_matrix.md
+      - "Hypervisor Validation Checkpoints": core/sdk/architecture/hypervisor_validation.md
+      - "AI Engineering Guardrails": core/sdk/architecture/ai_guardrails.md
+      - "System Dependencies & DI": core/sdk/architecture/dependencies.md
+      - "Core SDK Services Specs":
+          - "Memory Mapping Engine": core/sdk/services/memory_mapper.md
+          - "Process Chain Enumerator": core/sdk/services/task_enumerator.md
+          - "Hardware MMU Emulator": core/sdk/services/mmu_emulator.md

@@ -1,3 +1,6 @@
+!!! abstract "VMI Architectural Anchor"
+    **Core SDK Responsibility:** The \(GPA \longrightarrow HVA\) conditional translation logic defined here is handled explicitly by the `HypervisorRouter` service. It bridges the hardware MMIO hole before guest kernel structures are parsed.
+
 # Ch.1.2 - Layer B: Hypervisor EPT Map
 
 ## 1.1 Second Level Address Translation (SLAT / EPT)

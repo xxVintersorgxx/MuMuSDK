@@ -1,3 +1,6 @@
+!!! abstract "VMI Architectural Anchor"
+    **Core SDK Responsibility:** This kernel tier is the tracking domain of the `TaskEnumerator` service. It sweeps this space out-of-process for system signatures to isolate the target game's Page Global Directory (`PGD`) root pointer.
+
 # Ch.1.3 - Layer C: Guest Android Kernel Physical Space
 
 ## 1.1 The Virtual-to-Physical Kernel Map

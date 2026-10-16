@@ -1,0 +1,24 @@
+{
+  "output": {
+    "style": "xml",
+    "removeComments": false,
+    "topFilesLength": 10
+  },
+  "ignore": {
+    "customPatterns": [
+      "**/site/**",
+      "**/.pytest_cache/**",
+      "**/__pycache__/**",
+      "**/bin/**",
+      "**/obj/**",
+      "**/.vs/**",
+      "mumu-sdk-docs/javascripts/**",
+      "mumu-sdk-docs/stylesheets/**",
+      "*.js",
+      "*.css",
+      "*.yml"
+    ],
+    "useGitignore": true,
+    "useDefaultPatterns": true
+  }
+}

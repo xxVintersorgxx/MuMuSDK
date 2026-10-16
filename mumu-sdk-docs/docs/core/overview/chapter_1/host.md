@@ -1,3 +1,6 @@
+!!! abstract "VMI Architectural Anchor"
+    **Core SDK Responsibility:** This host layer is mapped exclusively by the `MemoryMapper` service. The isolated 1.5625 GB and 3.4375 GB segments discovered here are cached immediately to anchor all downstream ARM64 page-table walking routines.
+
 # Ch.1.1 - Layer A: Host Virtual Workspace
 
 ## 1.1 The Execution Root

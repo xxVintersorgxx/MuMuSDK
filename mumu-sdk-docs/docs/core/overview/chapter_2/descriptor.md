@@ -23,7 +23,7 @@ To read these variables out-of-process without violating type safety, the SDK co
 using System;
 using System.Runtime.InteropServices;
 
-namespace MuMuSDK.Core.Structures
+namespace MuMuSDK.Core.Models
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct TaskDescriptor

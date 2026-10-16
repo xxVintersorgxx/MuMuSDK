@@ -16,7 +16,54 @@ Virtualization systems enforce hardware-level isolation barriers to convince the
 
 By emulating a hardware Memory Management Unit (MMU) directly inside our host application, we can read, translate, and verify live execution threads completely out-of-process.
 
-### SDK Overview: Structural Architecture
+---
+
+## 👁️ The Host-Side Perspective Hierarchy
+
+When performing Virtual Machine Introspection (VMI), **every single execution layer exists exclusively as raw, flat bytes sitting inside standard PC physical RAM sticks**. True physical hardware isolation does not exist inside user-mode software; instead, virtualization systems are nested execution boundaries designed to convince the guest environment it owns real silicon hardware. 
+
+From the host perspective looking downward, the simulation tiers stack sequentially:
+
+```text
+  [ THE HOST PERSPECTIVE: WINDOWS 10/11 & YOUR AVALONIA APP ]
+   │
+   ▼ ──► Reads raw bytes out of MuMuNxDevice.exe using Win32 API handles.
+  [ THE HYPERVISOR BOUNDARY: INTEL EPT / AMD SLAT TABLES ]
+   │
+   ▼ ──► Translates instruction sets and cuts Windows pages into virtual RAM pools.
+  [ THE GUEST OS SPHERE: ANDROID 15 KERNEL LINUX RUNTIME ]
+   │
+   ▼ ──► Manages process descriptors and splits its virtual hardware layout via TTBR0_EL1.
+  [ THE APPLICATION SPHERE: NATIVE GAME RUNTIME IL2CPP V31 ]
+        ──► Calculates scrambled ARM pointers, processes HybridCLR tables, expands Brotli data.
+```
+
+---
+
+## 🧱 The Functional Division Matrix
+
+To prevent the architectural drift that causes monolithic programs to fail, responsibilities are strictly split by their execution domain. If a live data stream returns garbage, this boundary layout allows you to verify your hypervisor vision *independently* of the game's obfuscation layer.
+
+!!! info "Shared Introspection Engineering Domains"
+
+    | Structural Layer | What it Sees / Manages | What it Believes | System Responsibility |
+    | :--- | :--- | :--- | :--- |
+    | **Game Plugin Space** | Obfuscated ARM64 pointers, Brotli data blocks, HybridCLR tables. | "I am executing pure ARM64 code on a native, secure mobile device phone configuration." | **Reverse-Engineering Sandbox:** Unscrambles game-specific loops and extracts typed data metrics. |
+    | **Core SDK Space** | Win32 Process handles, page allocations, Linux kernel task arrays, ARM64 page tables. | "I am managing physical hardware registers, MMIO mapping paths, and system scheduler loops." | **Virtual Hardware Emulator:** Translates Guest Virtual Addresses all the way down to Host Virtual Addresses. |
+
+---
+
+## 🧭 Invariant Validation Protocol
+
+!!! success "Isolating Core SDK Faults from Game Obfuscation Faults"
+    The Core SDK provides an isolated verification loop that completely ignores the target game binary. It scans high kernel memory for the static signature `swapper\0` and checks `PID == 0`. 
+    
+    *   **If the Core SDK can read the invariant Linux kernel string:** Your Win32 process mapping, hypervisor translation layer, and ARM64 page table walker are **100% correct**. Do not touch your core infrastructure. Any data errors reside entirely inside your plugin's game decryption loops.
+    *   **If the Core SDK cannot read the kernel string:** Your infrastructure lens is unaligned or blind. Do not touch your game plugin code; focus entirely on adjusting your core unmanaged layout sweeps against your third-party VMMap utility records.
+
+---
+
+## 🛠️ SDK Overview: Structural Architecture
 The instrumentation engine is split across three distinct operational layers wrapped in a modular C# / Rust software development kit:
 
 !!! note "Core Engine Pipeline Mapping"

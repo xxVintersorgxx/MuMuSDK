@@ -1,3 +1,5 @@
+!!! abstract "VMI Architectural Anchor"
+    **Game Plugin Responsibility:** This layer is the execution space of your dedicated, separate dynamic link library (DLL) plugins. Because the Core SDK provides a clear window past Layers A, B, and C, your plugin can analyze Layer D variables as flat memory, focusing entirely on reversing IL2CPP v31 tables, HybridCLR interpreters, and Brotli structures.
 # Ch.1.4 - Layer D: Application Runtime
 
 ## 1.1 The Target Execution Environment

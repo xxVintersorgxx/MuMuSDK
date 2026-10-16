@@ -1,0 +1,15 @@
+<Project>
+
+	<!-- Global Compilation Properties for all MuMuSDK Projects -->
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<!-- Unify Build Output Directories to a Centralized Root Folder -->
+		<BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)build\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+		<OutputPath>$(MSBuildThisFileDirectory)build\bin\$(Configuration)\</OutputPath>
+	</PropertyGroup>
+
+</Project>

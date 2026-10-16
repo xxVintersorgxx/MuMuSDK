@@ -68,11 +68,14 @@ docs.ps1
 code.ps1
 full.ps1
 repomix.bat
+builddir.py
+gen.py
 
 # Package Outputs
 repo-master-pack*.txt
 repo-code-only*.txt
 repo-docs-only*.txt
+
 
 # -------------------------------------------------------------------------
 # 6. OPERATING SYSTEM JUNKS

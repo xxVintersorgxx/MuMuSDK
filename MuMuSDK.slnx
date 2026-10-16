@@ -1,0 +1,18 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/1_Core/">
+    <Project Path="src/MuMuSDK.Core/MuMuSDK.Core.csproj" />
+  </Folder>
+  <Folder Name="/2_Apps/">
+    <Project Path="src/MuMuSDK.Desktop/MuMuSDK.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/3_Plugins/">
+    <Project Path="src/MuMuSDK.Plugins.Game/MuMuSDK.Plugins.Game.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+</Solution>

@@ -9,7 +9,7 @@ theme:
     - search.highlight
     - toc.integrate
     - content.code.copy          # Adds a copy button to code blocks
-    - content.code.annotate      # ENABLES: Text Annotations (1) below code blocks
+    - content.code.annotate      # Enables text annotations below code blocks
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -24,21 +24,21 @@ extra_javascript:
   - javascripts/mermaid_theme.js
 
 markdown_extensions:
-  - admonition                   # ENABLES: !!! info, !!! failure, !!! success blocks
-  - footnotes                    # ENABLES: [^1] Footnotes
+  - admonition                   # Enables: !!! info, !!! failure, !!! success blocks
+  - footnotes                    # Enables: Footnotes
   - attr_list                    # Required for styling extensions
   - md_in_html                   # Allows markdown parsing inside raw HTML elements
   - pymdownx.details             # Allows collapsible drop-down details blocks
-  - pymdownx.tabbed:             # ENABLES: === "Tabs" structure
+  - pymdownx.tabbed:             # Enables: === "Tabs" structure
       alternate_style: true 
-  - pymdownx.superfences:        # ENABLES: Mermaid rendering within code fences
+  - pymdownx.superfences:        # Enables: Mermaid rendering within code fences
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
           options:
             theme: base
-  - pymdownx.arithmatex:         # ENABLES: LaTeX Math Equations \[ ... \]
+  - pymdownx.arithmatex:         # Enables: LaTeX Math Equations \[ ... \]
       generic: true
 
 nav:
@@ -68,13 +68,24 @@ nav:
   - SDK Software Architecture:
       - "System Topology & Decoupling": core/sdk/architecture/architecture.md
       - "Solution File Structure": core/sdk/architecture/file_structure.md
-      - "Avalonia UI & Intent Pipeline": core/sdk/architecture/ui_architecture.md
-      - "Logging & Diagnostic Infrastructure": core/sdk/architecture/logging_infrastructure.md
-      - "Master Ticker & Game Loop Sync": core/sdk/architecture/ticker_synchronization.md
-      - "15-Scenario Core Verification Matrix": core/sdk/architecture/verification_matrix.md
-      - "Hypervisor Validation Checkpoints": core/sdk/architecture/hypervisor_validation.md
+      - "UI Architecture & Staging": core/sdk/architecture/ui_components.md
       - "AI Engineering Guardrails": core/sdk/architecture/ai_guardrails.md
-      - "System Dependencies & DI": core/sdk/architecture/dependencies.md
+      - "15-Scenario Core Verification Matrix": core/sdk/architecture/verification_matrix.md
+      
+      - "Core Engine Implementation Specs":
+          - "Safe Path Management Mandate": core/sdk/architecture/configuration.md
+          - "Dependency Injection Lifetimes": core/sdk/architecture/dependency_injection.md
+          - "Process Attachment & Handles": core/sdk/architecture/process_subsystem.md
+          - "Unmanaged Win32 Proxy Class": core/sdk/architecture/win32_helper_library.md
+          - "Strict Kernel Encapsulation": core/sdk/architecture/encapsulation_boundary.md
+          - "Low-Overhead Event Logging": core/sdk/architecture/logging_subsystem.md
+          - "High-Precision Ticker Engine": core/sdk/architecture/ticker_engine.md
+          - "Pre-Attachment Discovery Flow": core/sdk/architecture/environment_discovery.md
+          - "Dynamic Environment CLI Parsing": core/sdk/architecture/cli_json_discovery.md
+          - "Dynamic Memory Size Mapping": core/sdk/architecture/dynamic_memory_allocation.md
+          - "Configuration-Driven Handles": core/sdk/architecture/handle_discovery.md
+          - "Phase 2 Signature Scan Pool": core/sdk/architecture/signature_tracking.md
+          
       - "Core SDK Services Specs":
           - "Memory Mapping Engine": core/sdk/services/memory_mapper.md
           - "Process Chain Enumerator": core/sdk/services/task_enumerator.md

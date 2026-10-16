@@ -10,6 +10,7 @@
 [Ll]og/
 [Ll]ogs/
 capture/
+build/
 *.deps.json
 *.runtimeconfig.dev.json
 *.runtimeconfig.json
@@ -85,3 +86,5 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 [Nn]ew[──_][Ff]older/
+
+

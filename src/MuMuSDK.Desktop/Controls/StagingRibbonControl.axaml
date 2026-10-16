@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:MuMuSDK.Desktop.ViewModels"
+             x:Class="MuMuSDK.Desktop.Controls.StagingRibbonControl"
+             x:DataType="vm:MainViewModel">
+            
+
+<StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+        
+        <!-- Section A: Path Tracking Configuration -->
+        <StackPanel VerticalAlignment="Center" Spacing="4">
+            <Label Content="MuMuPlayer Home Base Path" Foreground="#8A8A93" FontSize="11" Padding="0"/>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBox Text="{Binding MumuInstallDirectory}" Width="240" Height="28" FontSize="12" VerticalContentAlignment="Center" Background="#1A1A1F" BorderBrush="#4A4A5A" Foreground="#FFFFFF"/>
+                
+                <!-- Use RelativeSource to look up the tree stack safely at compile time -->
+                <Button Content="..." 
+                        Command="{Binding BrowseMumuDirectoryCommand}" 
+                        CommandParameter="{Binding $parent[Window]}"
+                        Width="28" Height="28" 
+                        Background="#33333F" BorderBrush="#4A4A5A" Foreground="#FFFFFF" 
+                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                
+                <!-- Pre-Attachment Step Action Button -->
+                <Button Content="Scan Directory" 
+                        Command="{Binding ScanEmulatorDirectoryCommand}" 
+                        Height="28" FontSize="12" 
+                        Background="#2B3A42" Foreground="#88D6FF" BorderBrush="#3A4E5A"
+                        VerticalContentAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border BorderBrush="#3A3A45" BorderThickness="1,0,0,0" VerticalAlignment="Stretch" Margin="0,4"/>
+
+        <!-- Section B: Target Package Tracking Context -->
+        <StackPanel VerticalAlignment="Center" Spacing="4">
+            <Label Content="Target Package ID (`process_comm`)" Foreground="#8A8A93" FontSize="11" Padding="0"/>
+            <TextBox Text="{Binding TargetPackageName}" Width="160" Height="28" FontSize="12" VerticalContentAlignment="Center" Background="#1A1A1F" BorderBrush="#4A4A5A" Foreground="#FFFFFF"/>
+        </StackPanel>
+
+        <!-- Section C: Synchronization Constraints -->
+        <StackPanel VerticalAlignment="Center" Spacing="4">
+            <Label Content="Master Loop Refresh" Foreground="#8A8A93" FontSize="11" Padding="0"/>
+            <ComboBox ItemsSource="{Binding TickIntervalOptions}" SelectedItem="{Binding SelectedTickIntervalMs}" Width="90" Height="28" FontSize="12" Background="#1A1A1F" BorderBrush="#4A4A5A" Foreground="#FFFFFF">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding StringFormat={}{0} ms}" Foreground="White"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <Border BorderBrush="#3A3A45" BorderThickness="1,0,0,0" VerticalAlignment="Stretch" Margin="0,4"/>
+
+        <!-- Section D: Manual Initialization Sequential Sequence Track -->
+        <StackPanel VerticalAlignment="Center" Spacing="4">
+            <Label Content="Manual Staging Integration Execution Sequence" Foreground="#8A8A93" FontSize="11" Padding="0"/>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Button Content="1. Attach Device" Command="{Binding Stage1AttachCommand}" Height="28" FontSize="12" Background="#2A3C2A" Foreground="#88FF88" BorderBrush="#3A5A3A"/>
+                <Button Content="2. Sweep Memory" Command="{Binding Stage2ScanPoolsCommand}" Height="28" FontSize="12" Background="#2A3542" Foreground="#88CCFF" BorderBrush="#3A4A5A"/>
+                <Button Content="3. Align Kernel" Command="{Binding Stage3FindKernelCommand}" Height="28" FontSize="12" Background="#3F2A42" Foreground="#FF88FF" BorderBrush="#5A3A5A"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border BorderBrush="#3A3A45" BorderThickness="1,0,0,0" VerticalAlignment="Stretch" Margin="0,4"/>
+
+        <!-- Section E: Plugin Expansion Overlay Trigger -->
+        <StackPanel VerticalAlignment="Center" Spacing="4">
+            <Label Content="Extensions" Foreground="#8A8A93" FontSize="11" Padding="0"/>
+            <Button Content="Manage Plugins..." Command="{Binding OpenPluginManagerCommand}" Height="28" FontSize="12" Background="#33333F" BorderBrush="#4A4A5A" Foreground="#FFFFFF"/>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

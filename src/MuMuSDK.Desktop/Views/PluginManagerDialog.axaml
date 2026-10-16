@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       xmlns:vm="using:MuMuSDK.Desktop.ViewModels"
+        x:Class="MuMuSDK.Desktop.Views.PluginManagerDialog"
+        x:DataType="vm:PluginManagerViewModel"
+        Title="Reflective Plugin Extension Manager"
+        Width="680" Height="360"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1E24">
+
+    <Border Padding="16">
+        <Grid RowDefinitions="Auto, *, Auto">
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,12">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="DYNAMIC EXTRACTION PLUGINS" Foreground="#FFFFFF" FontSize="14" FontWeight="SemiBold"/>
+                    <TextBlock Text="Profiles target extensions reflecting the unified IGamePlugin compilation contract" Foreground="#8A8A93" FontSize="11"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="Hot Re-Sweep Folder" Command="{Binding RefreshPluginFolderCommand}" Height="28" FontSize="12" Background="#33333F" BorderBrush="#4A4A5A" Foreground="White"/>
+            </Grid>
+
+            <!-- Dynamic Discovery Rows Matrix (Row 1) -->
+            <DataGrid Grid.Row="1" ItemsSource="{Binding DiscoveredPlugins}" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All" Background="#111115" BorderBrush="#3A3A45" BorderThickness="1" Margin="0,0,0,12">
+                <DataGrid.Columns>
+                    
+                    <DataGridTextColumn Header="Target Comm Tag" Binding="{Binding TargetProcessComm}" Width="1.5*"/>
+                    <DataGridTextColumn Header="Version Fingerprint" Binding="{Binding VersionSignature}" Width="1.2*"/>
+                    <DataGridTextColumn Header="Execution Status" Binding="{Binding DeploymentStatus}" Width="1.5*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Bottom Footer Navigation Actions Control (Row 2) -->
+            <Button Grid.Row="2" Content="Close Manager" Click="CloseButton_Click" HorizontalAlignment="Right" Width="100" Height="28" FontSize="12" Background="#4A4A5A" Foreground="White"/>
+            
+        </Grid>
+    </Border>
+</Window>

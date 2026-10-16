@@ -1,11 +1,12 @@
 ﻿using Avalonia.Controls;
 
-namespace MuMuSDK.Desktop.Views;
-
-public partial class MainWindow : Window
+namespace MuMuSDK.Desktop.Views
 {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
     }
 }

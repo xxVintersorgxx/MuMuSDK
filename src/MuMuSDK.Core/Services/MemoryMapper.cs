@@ -1,93 +1,155 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
+using MuMuSDK.Core.Extensions;
 using MuMuSDK.Core.Interfaces;
+using MuMuSDK.Core.Win32;
 
 namespace MuMuSDK.Core.Services
 {
-    public class MemoryMapper : IMemoryMapper
+    public sealed class Win32MemoryMapper : IMemoryMapper, IMemoryReader, ILogSource
     {
-        // Win32 Allocation Filtering Constants
-        private const uint MEM_COMMIT = 0x1000;
-        private const uint MEM_PRIVATE = 0x2000;
-        private const uint PAGE_READWRITE = 0x04;
-        private const uint PROCESS_QUERY_INFORMATION = 0x0400;
-        private const uint PROCESS_VM_READ = 0x0010;
-
-        // Target Allocation Bound Sizes (in bytes)
-        private const ulong LowerTargetSize = 1677721600;  // Exactly 1.5625 GB
-        private const ulong UpperTargetSize = 3690987520;  // Exactly 3.4375 GB
+        private readonly IProcessTracker _processTracker;
 
         public IntPtr LowerBaseHva { get; private set; } = IntPtr.Zero;
         public IntPtr UpperBaseHva { get; private set; } = IntPtr.Zero;
+        public bool IsMapped { get; private set; }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MEMORY_BASIC_INFORMATION
+        public Win32MemoryMapper(IProcessTracker processTracker)
         {
-            public IntPtr BaseAddress;
-            public IntPtr AllocationBase;
-            public uint AllocationProtect;
-            public ushort PartitionId;
-            public IntPtr RegionSize;
-            public uint State;
-            public uint Protect;
-            public uint Type;
+            _processTracker = processTracker;
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, int processId);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool CloseHandle(IntPtr hObject);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, IntPtr dwLength);
-
-        /// <summary>
-        /// Dynamically targets the emulator process and performs an un-opinionated linear allocation sweep
-        /// to capture invariant Host Virtual Address (HVA) base anchors cleanly.
-        /// </summary>
-        public bool InitializeMapping(string targetProcessName = "MuMuNxDevice")
+        // --- IMemoryMapper Implementation (Linear Sweep Loops) ---
+        public bool InitializeMapping(long lowerSizeTarget, long upperSizeTarget)
         {
-            Process[] processes = Process.GetProcessesByName(targetProcessName);
-            if (processes.Length == 0) return false;
+            Reset();
 
-            Process targetProcess = processes[0];
-            IntPtr processHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, targetProcess.Id);
-            if (processHandle == IntPtr.Zero) return false;
-
-            IntPtr address = IntPtr.Zero;
-            IntPtr structSize = new IntPtr(Marshal.SizeOf<MEMORY_BASIC_INFORMATION>());
-
-            // Linear sweep across active user-mode address allocation boundaries
-            while (VirtualQueryEx(processHandle, address, out MEMORY_BASIC_INFORMATION mbi, structSize) != IntPtr.Zero)
+            if (!_processTracker.IsAttached || _processTracker.TargetHandle == null)
             {
-                ulong size = (ulong)mbi.RegionSize.ToInt64();
-
-                // Apply multi-tool validation constraints: MEM_COMMIT + PAGE_READWRITE + MEM_PRIVATE
-                if (mbi.State == MEM_COMMIT && mbi.Protect == PAGE_READWRITE && mbi.Type == MEM_PRIVATE)
-                {
-                    if (size == LowerTargetSize)
-                    {
-                        LowerBaseHva = mbi.BaseAddress;
-                    }
-                    else if (size == UpperTargetSize)
-                    {
-                        UpperBaseHva = mbi.BaseAddress;
-                    }
-                }
-
-                // Move calculation handle forward linearly to bypass redundant overlapping overhead
-                long nextAddress = mbi.BaseAddress.ToInt64() + mbi.RegionSize.ToInt64();
-                if (nextAddress <= address.ToInt64()) break; // Prevent arithmetic overflow wrapping
-
-                address = new IntPtr(nextAddress);
+                this.Log(MuMuLogLevel.Error, "Unable to execute virtual memory scan. Active target process handle is null or unattached.");
+                return false;
             }
 
-            CloseHandle(processHandle);
+            this.Log(MuMuLogLevel.Info, $"Commencing virtual sweep targeting dynamic pools. Bounds: Lower={lowerSizeTarget} bytes, Upper={upperSizeTarget} bytes");
 
-            // Verify both anchoring coordinates resolved perfectly
-            return LowerBaseHva != IntPtr.Zero && UpperBaseHva != IntPtr.Zero;
+            IntPtr currentAddress = IntPtr.Zero;
+            int infoStructSize = Marshal.SizeOf<NativeWin32.MEMORY_BASIC_INFORMATION>();
+
+            try
+            {
+                while ((long)currentAddress < NativeWin32.MAX_USER_ADDRESS_RANGE)
+                {
+                    var queryResult = NativeWin32.VirtualQueryEx(
+                        _processTracker.TargetHandle,
+                        currentAddress,
+                        out NativeWin32.MEMORY_BASIC_INFORMATION memInfo,
+                        (IntPtr)infoStructSize);
+
+                    if (queryResult == IntPtr.Zero) break;
+
+                    long pageSize = (long)memInfo.RegionSize;
+
+                    if (memInfo.State == NativeWin32.MEM_COMMIT &&
+                        memInfo.Protect == NativeWin32.PAGE_READWRITE &&
+                        memInfo.Type == NativeWin32.MEM_PRIVATE)
+                    {
+                        // Match page dimensions dynamically using values extracted straight out of the nemu data model!
+                        if (pageSize == lowerSizeTarget)
+                        {
+                            LowerBaseHva = memInfo.BaseAddress;
+                            this.Log(MuMuLogLevel.Info, $"[Phase 1] Successfully isolated Lower Base HVA anchor coordinate: 0x{LowerBaseHva.ToString("X")}");
+                        }
+                        else if (pageSize == upperSizeTarget)
+                        {
+                            UpperBaseHva = memInfo.BaseAddress;
+                            this.Log(MuMuLogLevel.Info, $"[Phase 1] Successfully isolated Upper Base HVA anchor coordinate: 0x{UpperBaseHva.ToString("X")}");
+                        }
+                    }
+
+                    currentAddress = (IntPtr)((long)memInfo.BaseAddress + pageSize);
+
+                    if (LowerBaseHva != IntPtr.Zero && UpperBaseHva != IntPtr.Zero)
+                    {
+                        IsMapped = true;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Log(MuMuLogLevel.Fatal, $"Critical crash encountered during memory mapping query loops: {ex.Message}");
+                Reset();
+                return false;
+            }
+
+            if (IsMapped)
+            {
+                this.Log(MuMuLogLevel.Info, "Phase 1 environment verification matrix successfully anchored across system memory partitions.");
+                return true;
+            }
+
+            this.Log(MuMuLogLevel.Warning, "Memory sweep complete, but one or more dynamic hypervisor allocation segments were missing.");
+            return false;
+        }
+
+        // --- IMemoryReader Implementation (Safe Managed Gatekeepers) ---
+        public bool ReadBytes(IntPtr hvaAddress, int bufferSize, byte[] outputBytes)
+        {
+            if (hvaAddress == IntPtr.Zero || outputBytes == null || outputBytes.Length < bufferSize)
+            {
+                return false;
+            }
+
+            if (!_processTracker.IsAttached || _processTracker.TargetHandle == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                // Call raw bare-metal API cleanly inside a managed safety shield
+                bool success = NativeWin32.ReadProcessMemory(
+                    _processTracker.TargetHandle,
+                    hvaAddress,
+                    outputBytes,
+                    (IntPtr)bufferSize,
+                    out IntPtr bytesRead);
+
+                return success && bytesRead.ToInt64() == bufferSize;
+            }
+            catch (Exception ex)
+            {
+                this.Log(MuMuLogLevel.Error, $"Memory proxy security exception encountered: {ex.Message}");
+                return false;
+            }
+        }
+
+        public T ReadStructure<T>(IntPtr hvaAddress) where T : struct
+        {
+            int structSize = Marshal.SizeOf<T>();
+            byte[] rawAllocationBuffer = new byte[structSize];
+
+            if (ReadBytes(hvaAddress, structSize, rawAllocationBuffer))
+            {
+                GCHandle pinnedBuffer = GCHandle.Alloc(rawAllocationBuffer, GCHandleType.Pinned);
+                try
+                {
+                    IntPtr bufferAddress = pinnedBuffer.AddrOfPinnedObject();
+                    return Marshal.PtrToStructure<T>(bufferAddress);
+                }
+                finally
+                {
+                    pinnedBuffer.Free();
+                }
+            }
+
+            return default;
+        }
+        public void Reset()
+        {
+            LowerBaseHva = IntPtr.Zero;
+            UpperBaseHva = IntPtr.Zero;
+            IsMapped = false;
         }
     }
 }

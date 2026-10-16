@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:MuMuSDK.Desktop.ViewModels"
+             x:Class="MuMuSDK.Desktop.Controls.TelemetryMonitorControl"
+             x:DataType="vm:MainViewModel">
+
+    <Grid RowDefinitions="Auto, *">
+        <TextBlock Grid.Row="0" Text="LIVE TARGET DATASTREAM METRICS" Foreground="#A1A1AA" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+        
+        <!-- High-Performance Data Display Grid -->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding TelemetryMetrics}" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All" Background="#111115" BorderBrush="#3A3A45" BorderThickness="1">
+            <DataGrid.Columns>
+                <!-- Avalonia natively routes sub-columns through DataGridTextColumn when matching standard DataGrid namespaces -->
+                <DataGridTextColumn Header="Metric Identifier Component" Binding="{Binding ComponentName}" Width="2*"/>
+                <DataGridTextColumn Header="Guest Physical Location (GPA)" Binding="{Binding GuestPhysicalAddress}" Width="1.5*"/>
+                <DataGridTextColumn Header="Hex Byte Dump Stream" Binding="{Binding HexByteView}" Width="2*"/>
+                <DataGridTextColumn Header="Materialized Readout" Binding="{Binding MaterializedValue}" Width="1.5*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -22,14 +22,13 @@ Host Memory Allocation Segment
  └── Type     == MEM_PRIVATE     --> Target anonymous pagefile-backed components
 ```
 
-!!! info "Target Buffer Specifications"
+## 📊 Dynamic Target Sizing Rules
 
-    | Memory Segment Block | Target Physical Limit | Expected Host Protection Mask |
-    | :--- | :--- | :--- |
-    | **Lower RAM Allocation** | `1.5625 GB` | `PAGE_READWRITE` |
-    | **Upper RAM Allocation** | `3.4375 GB` | `PAGE_READWRITE` |
+To prevent tracking failures across customized player instances, the linear page-walking sweep must never rely on hardcoded allocation sizes or static system thresholds.
 
----
+*   **Phase 1 Lower System RAM Boundary:** Anchored strictly at a baseline virtual memory allocation of `1,677,721,600` Bytes.
+*   **Phase 2 Upper App RAM Boundary:** Determined dynamically at initialization by converting the active instance's `"vm_mem"` CLI string variable into an absolute byte scale factor matrix.
+
 
 ## ⚠️ Architectural Invariants
 

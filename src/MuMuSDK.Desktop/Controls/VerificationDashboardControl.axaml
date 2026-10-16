@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:MuMuSDK.Desktop.ViewModels"
+             x:Class="MuMuSDK.Desktop.Controls.VerificationDashboardControl"
+             x:DataType="vm:MainViewModel">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="16">
+            
+            <!-- Section 1: Invariant Address Anchors -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="HOST MEMORY BASE ANCHORS" Foreground="#A1A1AA" FontSize="12" FontWeight="SemiBold"/>
+                
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Lower System RAM (1.5625 GB)" Foreground="#8A8A93" FontSize="11"/>
+                    <TextBox Text="{Binding LowerBaseHvaString}" IsReadOnly="True" Background="#1A1A1F" Foreground="#88CCFF" BorderBrush="#3A3A45" FontSize="12" Height="26" VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Upper Application RAM (3.4375 GB)" Foreground="#8A8A93" FontSize="11"/>
+                    <TextBox Text="{Binding UpperBaseHvaString}" IsReadOnly="True" Background="#1A1A1F" Foreground="#88CCFF" BorderBrush="#3A3A45" FontSize="12" Height="26" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+
+            <Border BorderBrush="#3A3A45" BorderThickness="0,0,0,1"/>
+
+            <!-- Section 2: Phase 1 & 2 Verification Checkpoints Matrix -->
+            <StackPanel Spacing="10">
+                <TextBlock Text="INTEGRATION VERIFICATION" Foreground="#A1A1AA" FontSize="12" FontWeight="SemiBold"/>
+
+                <CheckBox IsChecked="{Binding IsWin32HandleValid}" IsHitTestVisible="False" Content="Win32 Process Handle Secured" Foreground="#FFFFFF" FontSize="12"/>
+                <CheckBox IsChecked="{Binding IsMemoryPoolMapped}" IsHitTestVisible="False" Content="Hypervisor Sections Swept" Foreground="#FFFFFF" FontSize="12"/>
+                <CheckBox IsChecked="{Binding IsSwapperSignatureFound}" IsHitTestVisible="False" Content="Kernel Node 'swapper' Verified" Foreground="#FFFFFF" FontSize="12"/>
+                <CheckBox IsChecked="{Binding IsPidZeroValidated}" IsHitTestVisible="False" Content="Init Task Struct PID == 0 Check" Foreground="#FFFFFF" FontSize="12"/>
+                <CheckBox IsChecked="{Binding IsTaskChainAnchored}" IsHitTestVisible="False" Content="Doubly-Linked List Traversable" Foreground="#FFFFFF" FontSize="12"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
